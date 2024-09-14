@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using PlanY.Domain.Concreted;
 using PlanY.Domain.Exceptions;
 
 namespace PlanY.Domain.Entities;
 
-public class User : BaseEntity
+public class User : BaseEntity<Guid>
 {
     public User(string identityGuid, string name)
     {
@@ -14,6 +15,7 @@ public class User : BaseEntity
     }
 
     [Required] public string IdentityGuid { get; private set; }
-
     [Required] public string Name { get; private set; }
+    public ICollection<DailyPlan> DailyPlans { get; set; }
+    public ICollection<TravelPlan> TravelPlans { get; set; }
 }

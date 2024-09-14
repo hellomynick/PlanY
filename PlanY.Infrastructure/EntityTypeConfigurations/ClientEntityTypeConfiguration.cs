@@ -11,6 +11,6 @@ public class ClientEntityTypeConfiguration : IEntityTypeConfiguration<ClientRequ
         builder.ToTable("requests");
         builder.Property(c => c.Id).IsRequired();
         builder.Property(c => c.Name).IsRequired();
-        builder.Property(c => c.Time).IsRequired();
+        builder.Property(c => c.DateTime).IsRequired();
     }
 }

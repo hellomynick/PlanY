@@ -8,10 +8,11 @@
 
     <ItemGroup>
         <ProjectReference Include="..\PlanY.Domain\PlanY.Domain.csproj"/>
+        <ProjectReference Include="..\PlanY.Infrastructure\PlanY.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\" />
+        <Folder Include="Queries\"/>
     </ItemGroup>
 
 </Project>

@@ -1,11 +1,12 @@
-using PlanY.Domain.Entities;
+using PlanY.Infrastructure.UnitOfWork;
 
 namespace PlanY.UseCase.Repositories;
 
 public interface IRepositoryBase<T>
-    where T : BaseEntity
 {
-    Task AddAsync(T item);
-    Task UpdateAsync(T item);
-    Task<T> DeleteAsync(long id);
+    IUnitOfWork UnitOfWork { get; }
+
+    Task<T?> AddAsync(T item);
+    T Update(T item);
+    T Delete(T item);
 }

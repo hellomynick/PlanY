@@ -1,22 +1,22 @@
-namespace PlanY.Domain.Entities;
+namespace PlanY.Domain.Concreted;
 
-public abstract class BaseEntity
+public abstract class BaseEntity<T>
 {
     private int? _requestedHashCode;
 
-    public virtual long Id { get; protected set; }
+    public virtual T Id { get; protected set; }
 
-    public required DateTime DateCreated { get; set; }
-    public required DateTime DateUpdated { get; set; }
+    public DateTime DateCreated { get; set; }
+    public DateTime DateUpdated { get; set; }
 
     public bool IsTransient()
     {
-        return Id == 0;
+        return Id.Equals(default(T));
     }
 
     public override bool Equals(object? obj)
     {
-        if (obj is not BaseEntity entity)
+        if (obj is not BaseEntity<T> entity)
             return false;
 
         if (ReferenceEquals(this, entity))
@@ -27,7 +27,7 @@ public abstract class BaseEntity
 
         if (entity.IsTransient() || IsTransient())
             return false;
-        return entity.Id == Id;
+        return entity.Id.Equals(Id);
     }
 
     public override int GetHashCode()
@@ -45,12 +45,12 @@ public abstract class BaseEntity
         return base.GetHashCode();
     }
 
-    public static bool operator ==(BaseEntity left, BaseEntity right)
+    public static bool operator ==(BaseEntity<T>? left, BaseEntity<T>? right)
     {
         return left?.Equals(right) ?? Equals(right, null);
     }
 
-    public static bool operator !=(BaseEntity left, BaseEntity right)
+    public static bool operator !=(BaseEntity<T> left, BaseEntity<T> right)
     {
         return left != right;
     }

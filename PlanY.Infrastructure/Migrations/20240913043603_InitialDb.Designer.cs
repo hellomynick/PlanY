@@ -2,18 +2,21 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PlanY.Infrastructure;
 
 #nullable disable
 
-namespace PlanY.Presentation.Migrations
+namespace PlanY.Infrastructure.Migrations
 {
     [DbContext(typeof(PlanYDbContext))]
-    partial class PlanYDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240913043603_InitialDb")]
+    partial class InitialDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,15 +48,20 @@ namespace PlanY.Presentation.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<decimal>("Expense")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("NamePlan")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("dailyPlans", "planY");
                 });
@@ -83,6 +91,9 @@ namespace PlanY.Presentation.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<decimal>("Expense")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("Location")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -93,21 +104,21 @@ namespace PlanY.Presentation.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("travelPlans", "planY");
                 });
 
             modelBuilder.Entity("PlanY.Domain.Entities.User", b =>
                 {
-                    b.Property<long>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("timestamp with time zone");
@@ -134,17 +145,45 @@ namespace PlanY.Presentation.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.Property<TimeOnly>("Time")
-                        .HasColumnType("time without time zone");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("requests", "planY");
+                });
+
+            modelBuilder.Entity("PlanY.Domain.Entities.DailyPlan", b =>
+                {
+                    b.HasOne("PlanY.Domain.Entities.User", "User")
+                        .WithMany("DailyPlans")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PlanY.Domain.Entities.TravelPlan", b =>
+                {
+                    b.HasOne("PlanY.Domain.Entities.User", "User")
+                        .WithMany("TravelPlans")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("PlanY.Domain.Entities.User", b =>
+                {
+                    b.Navigation("DailyPlans");
+
+                    b.Navigation("TravelPlans");
                 });
 #pragma warning restore 612, 618
         }

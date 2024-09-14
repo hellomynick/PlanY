@@ -1,4 +1,6 @@
-using PlanY.Infrastructure.Extensions;
+using PlanY.Presentation.Apis.DailyPlanApi;
+using PlanY.Presentation.Apis.UserApi;
+using PlanY.Presentation.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,10 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddInfrastructureLayer(builder.Configuration.GetConnectionString("PlanYDb"));
+builder.Services.AddPresentationLayer(builder.Configuration);
 
 var app = builder.Build();
+
+app.MapDailyPlanV1();
+app.MapUserApiV1();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

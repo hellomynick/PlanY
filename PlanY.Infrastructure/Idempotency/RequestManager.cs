@@ -9,21 +9,24 @@ public class RequestManager : IRequestManager
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
+    public async Task<bool> IsExistRequest(Guid id)
+    {
+        var request = await FindByIdAsync(id);
+        return request != null;
+    }
+
     private async Task<Guid?> FindByIdAsync(Guid id)
     {
         var request = await _context.ClientRequests.FindAsync(id);
         return request?.Id;
     }
 
-    public async Task AddRequest(ClientRequest clientRequest)
+    public async Task AddRequest<T>(Guid id)
     {
-        if (await IsExistRequest(clientRequest.Id)) throw new Exception("request is exist");
-        await _context.ClientRequests.AddAsync(clientRequest);
-    }
+        if (await IsExistRequest(id)) throw new Exception("request is exist");
 
-    public async Task<bool> IsExistRequest(Guid id)
-    {
-        var request = await FindByIdAsync(id);
-        return request != null;
+        var clientRequest = new ClientRequest(id, nameof(T), DateTime.UtcNow);
+
+        await _context.ClientRequests.AddAsync(clientRequest);
     }
 }

@@ -5,5 +5,5 @@ namespace PlanY.UseCase.Repositories;
 public interface ITravelPlanRepository : IRepositoryBase<TravelPlan>
 {
     Task<TravelPlan?> FindByIdAsync(long id);
-    Task<List<TravelPlan?>> FindListAsync();
+    Task<List<TravelPlan>> FindListAsync();
 }
